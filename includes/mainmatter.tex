@@ -1,0 +1,33 @@
+\mainmatter
+%
+%%%%% Main Content
+%
+\input{includes/chapters/1/introduction}            % Chapter 1:  Introduction
+\input{includes/chapters/2/lit_review}				% Chapter 2:  Background & Literature Review
+\input{includes/chapters/3/methods}			    	% Chapter 3:  Materials and Methods
+\input{includes/chapters/4/results}			    	% Chapter 4:  Results
+\input{includes/chapters/5/discussion}				% Chapter 5:  Discussion
+\input{includes/chapters/6/conclusion}				% Chapter 6:  Conclusion
+\input{includes/chapters/7_app/app_1.tex}			% Appendix 1: An Appendix
+\cleardoublepage
+%
+%%%%% Glossary and Nomenclature
+%
+\printnomenclature[0.75in]
+\setglossarystyle{long}
+\setlength{\glsdescwidth}{0.85\textwidth} %redefine description field width
+\renewcommand*{\glspostdescription}{}	%remove '.' after each glossary entry
+\printglossaries
+
+\cleardoublepage
+%
+%%%%% Bibliography
+%
+\renewcommand{\bibname}{Bibliography}
+\bibliographystyle{chicago}
+\bibliography{Bibliography/bibliography1}
+
+%
+%%%%% Appendicies
+%
+%\appendix

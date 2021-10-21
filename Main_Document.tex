@@ -1,0 +1,277 @@
+\documentclass[1.5in,11pt,double,submission]{beavtex2} %change from preprint to submission 
+%
+% To convert from DRAFT to FINAL
+%	change preprint to submission in \documentclass above
+%	change draft to final in \usepackage{varioref}
+%	change url colors to 'black' in \usepackage{pdftex}
+%
+%%%%% Page Thumbnails
+%
+%\usepackage{thumbpdf} %make thumbnails in pdf document
+%
+%%%%% Fonts & Symbols
+%
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[sumlimits,intlimits,namelimits]{amsmath} % this was in math and notation section, but needs to be before palatino font packages newpxtext and newpxmath
+% comment or un-comment fonts as you like, if you comment all optional font packages here, the document will default to LaTeX's Computer Modern font
+% the template was given to me with palatino as the font and I updated to newer packages for the font
+%% palatino
+\usepackage{newpxtext,newpxmath}
+
+%% bitstream-charter
+%\usepackage{charter} % changes font for text only to bit-stream charter
+
+
+%
+%%%%% Specials
+%
+\usepackage{ulem} %allows linebreaks with underlined text
+\usepackage{xspace} %allows space in text representation of defined command
+%\usepackage{squishlist} %compresses itemized lists
+\usepackage[bottom]{footmisc}  % inserts space between text and footer to fix weird spacing between paragraphs
+%
+%%%%% Math and Notation
+%
+
+\usepackage{amssymb,stmaryrd,pifont} 
+\usepackage{wasysym}
+\usepackage{isotope}
+\usepackage{cancel}
+\usepackage{calc}
+\usepackage[all,error]{onlyamsmath}
+\usepackage{siunitx}
+\sisetup{detect-weight=true, detect-family=true} % makes siunitx follow font formatting like bold, italic, etc.
+
+
+%
+%%%%% Floats
+%
+\usepackage{float}   %float specifications
+\usepackage{subfig}  %subfigures
+\usepackage{caption} %customize captions
+\usepackage[section,above,below]{placeins} %keep floats from migrating outside their section
+\usepackage{afterpage}
+%
+%%%%% Graphics
+%
+\usepackage[svgnames,x11names,pdftex,fixpdftex]{xcolor}
+\usepackage{graphicx}
+\usepackage{fancybox}
+\usepackage[percent]{overpic}
+\usepackage{pgf}
+%
+%%%%% Tables
+%
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{booktabs}  %prettier tables
+\usepackage{array}   %table column width specifications
+\usepackage{rotating}
+\usepackage[pdftex]{lscape}
+\usepackage{colortbl}
+\usepackage{hhline}
+\renewcommand{\arraystretch}{1.3} % increase row separation
+%
+%%%%% Nomenclature
+%
+\usepackage[intoc]{nomencl}%,noprefix
+\setlength{\nomitemsep}{-\parsep}
+\makenomenclature
+\renewcommand{\nomname}{List of Symbols}
+\input{includes/doc_struct/symbolist}
+\input{includes/doc_struct/usercommands}
+%
+%%%%% Code for multiple page sizes
+%
+% reminder: US letter: 596pt x 795pt
+
+% Layout A (letter)
+\newlength{\pagewidthA} \setlength{\pagewidthA}{\pdfpagewidth}
+\newlength{\pageheightA} \setlength{\pageheightA}{\pdfpageheight}
+
+% Layout B (11x17, landscape)
+\newlength{\pagewidthB} \setlength{\pagewidthB}{17in}
+\newlength{\pageheightB} \setlength{\pageheightB}{11in}
+
+% margin values
+%
+\newlength{\leftmar} \setlength{\leftmar}{1.5in}
+\newlength{\rightmar} \setlength{\rightmar}{1in}
+\newlength{\topmar} \setlength{\topmar}{1.4in}
+\newlength{\bottommar} \setlength{\bottommar}{1in}
+
+% stockwidth and stockheight - from memoir,
+% here just for cheating `layouts` warnings
+\newlength{\stockwidth}
+\newlength{\stockheight}
+
+
+\usepackage{geometry}
+
+% this command will take effect into L1 layout just after \begin{document}
+% but the L1 geometry will otherwise be ignored
+\geometry{left=\leftmar,right=\rightmar,top=\topmar,bottom=\bottommar}
+
+\usepackage{tikz,enumitem}
+\usepackage{fix-cm}
+
+\usepackage{layouts}
+\usepackage{etoolbox}
+\patchcmd{\drawpage}{\ifdrawparameters}{\iftrue}%
+{\typeout{^^J*******\string\drawpage fixed*******^^J}}%
+{\typeout{^^J*******\string\drawpage not fixed*******^^J}}
+
+\makeatletter
+\newcommand{\printpagevalues}{%
+	% from geometry.sty:
+	* paper: \ifx\Gm@paper\@undefined<default>\else\Gm@paper\fi \\%
+	* layout: \ifGm@layout<custom>\else<same size as paper>\fi \\%
+	\@ifundefined{ifGm@layout}{}{%
+		\ifGm@layout
+		* layout(width,height): (\the\Gm@layoutwidth,\the\Gm@layoutheight) \\%
+		\fi
+		* layoutoffset:(h,v)=(\the\Gm@layouthoffset,\the\Gm@layoutvoffset) \\%
+	}%
+	\pagevalues % from package layouts
+}
+\makeatother
+
+
+\newcommand{\generatePageLayouts}{%
+	\newgeometry{layoutwidth=\pagewidthA,layoutheight=\pageheightA,left=\leftmar,right=\rightmar,top=\topmar,bottom=\bottommar}
+	\savegeometry{LayoutPageA}
+	
+	\newgeometry{layoutwidth=\pagewidthB,layoutheight=\pageheightB,left=\leftmar,right=\rightmar,top=\topmar,bottom=\bottommar}
+	\savegeometry{LayoutPageB}
+}
+
+
+\newcommand{\switchToLayoutPageA}{%
+	% switch page size first:
+	\pdfpagewidth=\pagewidthA \pdfpageheight=\pageheightA % for PDF output
+	\paperwidth=\pagewidthA \paperheight=\pageheightA     % for TikZ
+	\stockwidth=\pagewidthA \stockheight=\pageheightA % hyperref (memoir)?!
+	\loadgeometry{LayoutPageA} % note; \loadgeometry may reset paperwidth/h!
+}
+
+\newcommand{\switchToLayoutPageB}{%
+	% switch page size first:
+	\pdfpagewidth=\pagewidthB \pdfpageheight=\pageheightB % for PDF output
+	\paperwidth=\pagewidthB \paperheight=\pageheightB     % for TikZ
+	\stockwidth=\pagewidthB \stockheight=\pageheightB % hyperref (memoir)?!
+	\loadgeometry{LayoutPageB} % note; \loadgeometry may reset paperwidth/h!
+}
+%
+%%%%% Natbib
+%
+\usepackage[sort&compress]{natbib}
+\citeindextrue
+%
+%%%%% Cross-References
+%
+\usepackage[final]{varioref}
+%
+%%%%% Appendices
+%\usepackage[toc,page]{appendix}
+%\makeatletter
+%\labelformat{equation}{Eq.~\tagform@{#1}} % add equation labelling
+%\makeatother
+%
+%%%%% Hyperref
+%
+\usepackage[pdftex,
+pdfauthor={Student Name},
+pdftitle={A Cool Title for a Thesis},
+pdfsubject={MS Thesis},
+pdfdisplaydoctitle={true},
+pdffitwindow={true},
+pdfstartview={Fit},
+%pdfstartview={FitR 130 622 435 722},
+pdfview={Fit},
+pdfstartpage = {1},
+colorlinks={true},
+linkcolor={blue},    % for screen
+citecolor={green},   % for screen
+urlcolor={red},       % for screen
+%linkcolor={black},  % for printing
+%citecolor={black},  % for printing
+%urlcolor={black},    % for printing
+bookmarksopen={true},
+bookmarksopenlevel={1},
+bookmarksnumbered={true}
+]{hyperref}
+%
+%%%%% Cross-References
+%
+%\usepackage[notref,notcite]{showkeys}
+%\renewcommand{\showkeyslabelformat}{\scriptsize}
+\usepackage[noabbrev, nameinlink]{cleveref}
+%
+%%%%% Glossaries
+%
+\usepackage[nomain,acronym,nonumberlist,toc]{glossaries}
+\makeglossaries
+\input{includes/doc_struct/acronymlist}
+%
+%%%%% Thesis Fields
+%
+\title{A Cool Title for a Thesis}
+\titleA{A Cool Title }
+\titleB{for a Thesis}
+\author{Student~Name}
+\degtype{Master of Science}
+\doctype{Thesis}
+\major{Nuclear Engineering}
+\department{Nuclear Science and Engineering}
+\depttype{School}
+\depthead{Head}
+\advisor{Advisor Name}
+\submitdate{Submission Date}
+\commencementyear{Commencement Year}
+%
+%%%%% Random Stuff
+%
+\newlength{\mlength} % length for adjusting math alignment
+\newcommand{\tabitem}{~~\llap{\textbullet}~~} % bullet point for use in tables
+%
+%%%%% Float Adjustment
+\renewcommand\dblfloatpagefraction{.90}  %two column float page must be 90% full
+\renewcommand\dbltopfraction{.80}  %two column top float can cover up to 80% of page
+\renewcommand\floatpagefraction{.80}  %float page must be 80% full
+\renewcommand\topfraction{.80}  %top float can cover up to 80% of page
+\renewcommand\bottomfraction{.80}  %bottom float can cover up to 80% of page
+\renewcommand\textfraction{.10}  % at least 10% of a normal page must contain text
+\setlength\dbltextfloatsep{.25in}  %separation between floats and text, default = 9pt plus 5pt minus 3pt
+\setlength\textfloatsep{.25in}  %separation between two column floats and text, default = 4pt plus 2pt minus 1.5pt
+%
+%%%%% Abstract
+%
+\input{includes/frontmatter/abstract}
+%
+%%%%% Acknowledgements and Dedication
+%
+\input{includes/frontmatter/acknowledgements}
+%
+% % % % %
+
+
+%%%%% Begin Document
+\begin{document}
+	
+% generate page layouts first based on layoutwidth as page size;
+% don't switch actual page sizes yet:
+\generatePageLayouts{}
+%switch to layoutA (letter)
+\switchToLayoutPageA{}
+
+%% Pretexts
+%\setcounter{lofdepth}{2}
+\pretext
+\listofappendixfigures
+
+%% Main contents
+\input{includes/mainmatter}
+
+\end{document}
