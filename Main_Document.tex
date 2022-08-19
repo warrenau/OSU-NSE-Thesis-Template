@@ -16,9 +16,7 @@
 \usepackage{gensymb}
 \usepackage[sumlimits,intlimits,namelimits]{amsmath} % this was in math and notation section, but needs to be before palatino font packages newpxtext and newpxmath
 % comment or un-comment fonts as you like, if you comment all optional font packages here, the document will default to LaTeX's Computer Modern font
-% the template was given to me with palatino as the font and I updated to newer packages for the font
-%% palatino
-\usepackage{newpxtext,newpxmath}
+
 
 %% bitstream-charter
 %\usepackage{charter} % changes font for text only to bit-stream charter
@@ -36,6 +34,11 @@
 %
 
 \usepackage{amssymb,stmaryrd,pifont} 
+
+% the template was given to me with palatino as the font and I updated to newer packages for the font
+%% palatino
+\usepackage{newpxtext,newpxmath} % this needs to be after amsmath and amssymb
+
 \usepackage{wasysym}
 \usepackage{isotope}
 \usepackage{cancel}
